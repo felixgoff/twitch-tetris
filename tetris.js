@@ -119,13 +119,13 @@ function Tetris(controller) {
 			gameEndTty.addLine(scoreObject.score.toString());
 		    gameEndTty.addLine('');
 		    gameEndTty.addLine('');
-		    if (!localstorage.highscore) {localstorage.highscore=JSON.stringify(JSON.parse([scoreObject.score.toString()]))} else {
+		    if (!localStorage.highscore) {localstorage.highscore=JSON.stringify(JSON.parse([scoreObject.score.toString()]))} else {
 		    	scorelist = JSON.parse(localstorage.highscore)
 		    	array = []
 		    	for(var i in json_data)
     				array.push([i, scorelist [i]]);
 			array.push(scoreObject.score.toSring())
-		    	localstorage.highscore = JSON.stringify(JSON.parse(array))
+		    	localStorage.highscore = JSON.stringify(JSON.parse(array))
 		    }
 		    //sendScoreRequest(scoreObject.score);
 
