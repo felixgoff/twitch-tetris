@@ -119,7 +119,7 @@ function Tetris(controller) {
 			gameEndTty.addLine(scoreObject.score.toString());
 		    gameEndTty.addLine('');
 		    gameEndTty.addLine('');
-
+		    localstorage.highscore = scoreObject.score.toSring()
 		    //sendScoreRequest(scoreObject.score);
 
 			window.setTimeout(function() {
