@@ -122,7 +122,7 @@ function Tetris(controller) {
 		    if (!localStorage.highscore) {localStorage.highscore=JSON.stringify(JSON.parse([scoreObject.score.toString()]))} else {
 		    	scorelist = JSON.parse(localStorage.highscore)
 		    	array = []
-		    	for(var i in json_data)
+		    	for(var i in scorelist)
     				array.push([i, scorelist [i]]);
 			array.push(scoreObject.score.toSring())
 		    	localStorage.highscore = JSON.stringify(JSON.parse(array))
