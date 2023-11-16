@@ -96,7 +96,8 @@ function Tetris(controller) {
 		scoreObject = game.getResults();
 		if (scoreObject) {
 		    gameOver = true;
-
+		    endScore = scoreObject.score.toString()
+		    localstorage.score = endScore
 		    // make the game end visible
 		    document.getElementById('gameEndContainer').setAttribute('class', 'gameEndOutputVisible');
 		    gameEndTty.addLine('GOOD GAME!!!');
@@ -116,15 +117,16 @@ function Tetris(controller) {
 			*/
 			
 			gameEndTty.addLine('Your score was:');
-			gameEndTty.addLine(scoreObject.score.toString());
+			gameEndTty.addLine(endScore);
 		    gameEndTty.addLine('');
 		    gameEndTty.addLine('');
 		    if (!localStorage.highscore) {localStorage.highscore=JSON.stringify(JSON.parse([scoreObject.score.toString()]))} else {
 		    	scorelist = JSON.parse(localStorage.highscore)
+			score=localstorage.score
 		    	array = []
 		    	for(var i in scorelist)
     				array.push([i, scorelist [i]]);
-			array.push(scoreObject.score.toSring())
+			array.push(score)
 		    	localStorage.highscore = JSON.stringify(JSON.parse(array))
 		    }
 		    //sendScoreRequest(scoreObject.score);
