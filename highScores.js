@@ -14,7 +14,7 @@ function highScoresOnLoad() {
 	i;
 
 	dailyOutput= '<table class="highScoreTable"><tr class="highScoreTableHeader"><td>#</td><td>Name</td><td>Score</td></tr>';
-	dailyScoreList = JSON.parse(localstorage.highscore)
+	dailyScoreList = JSON.parse(localStorage.highscore)
 	for (i = 0; i < dailyScoreList.length; i += 1) {
 	curScore = dailyScoreList[i];
 	dailyOutput += '<tr><td>' + (i+1) + '</td><td>' + curScore + '</td></tr>';
