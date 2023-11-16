@@ -125,7 +125,7 @@ function Tetris(controller) {
 		    	for(var i in json_data)
     				array.push([i, scorelist [i]]);
 			array.push(scoreObject.score.toSring())
-		    	localstorage.highscore = array
+		    	localstorage.highscore = JSON.stringify(JSON.parse(array))
 		    }
 		    //sendScoreRequest(scoreObject.score);
 
