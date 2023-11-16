@@ -24,3 +24,4 @@ function highScoresOnLoad() {
 
 	document.getElementById("dailyScoreDiv").innerHTML = dailyOutput;
 
+}
