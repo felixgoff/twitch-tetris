@@ -10,14 +10,21 @@ function getXmlHttp() {
 }
 
 function highScoresOnLoad() {
-	dailyOutput,
-	i;
 
-	dailyOutput= '<table class="highScoreTable"><tr class="highScoreTableHeader"><td>#</td><td>Name</td><td>Score</td></tr>';
-	dailyScoreList = JSON.parse(localStorage.highscore)
+	dailyOutput= '<table class="highScoreTable"><tr class="highScoreTableHeader"><td>#</td><td>Date</td><td>Score</td></tr>';
+	array = []
+	data = localStorage.highscore.split(",")
+    for (i in data){
+        array.push(data[i])
+	}
+	console.log(array)
+	dailyScoreList = array
 	for (i = 0; i < dailyScoreList.length; i += 1) {
-	curScore = dailyScoreList[i];
-	dailyOutput += '<tr><td>' + (i+1) + '</td><td>' + curScore + '</td></tr>';
+		data = JSON.parse(JSON.parse(JSON.stringify(dailyScoreList[i].toString().replaceAll("'",","))))
+		console.log(data)
+		Score = data.score
+		Date = data.date
+		dailyOutput += '<tr><td>' + (i+1) + '</td><td>' + Date + '</td><td>' + Score + '</td></tr>';
 	}
 
 	dailyOutput += '</table>';
