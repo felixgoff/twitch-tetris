@@ -121,22 +121,31 @@ function Tetris(controller) {
 		    gameEndTty.addLine('');
 		    gameEndTty.addLine('');
 		    if (!localStorage.highscore) {
-				array=[]
-				array.push(scoreObject.score.toString())
-				localStorage.highscore=array.toString()} 
-			else {
-		    	scorelist = localStorage.highscore.split(",")
-				score=localStorage.score
-		    	array = []
-				console.log(scorelist)
-				if (Array.isArray(scorelist) == true){
-					for (i in scorelist) {
-						array.push(scorelist[i])
-					}
+				json = JSON.parse("{}")
+				array = new Array()
+				d = new Date()
+				a = d.getDate()+"/"+d.getMonth()+"/"+d.getFullYear()+" At "+d.getHours()+":"+d.getMinutes()
+				json.date = a.toString()
+				json.score = endScore
+				array.push(JSON.stringify(json).replaceAll(",","'"))
+				console.log(array)
+				localStorage.highscore=JSON.parse(JSON.stringify(array)) 
 				}
+			else {
+				json = JSON.parse("{}")
+				score = localStorage.score
+		    	array = []
+				data = localStorage.highscore.split(",")
+				for (i in data){
+				    array.push(data[i])
+				}
+				d = new Date()
+				a = d.getDate()+"/"+d.getMonth()+"/"+d.getFullYear()+" At "+d.getHours()+":"+d.getMinutes()
+				json.date = a.toString()
+				json.score = endScore
+				array.push(JSON.stringify(json).replaceAll(",","'"))
 				console.log(array)
-				array.push(score)
-				console.log(array)
+				console.log(array.toString())
 		    	localStorage.highscore = array.toString()
 		    }
 		    //sendScoreRequest(scoreObject.score);
