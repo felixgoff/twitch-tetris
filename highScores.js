@@ -18,7 +18,11 @@ function highScoresOnLoad() {
         array.push(data[i])
 	}
 	console.log(array)
-	dailyScoreList = array
+	dailyScoreList = array.sort(function(a, b){
+		x = JSON.parse(JSON.parse(JSON.stringify(b.replaceAll("'",","))))
+		y = JSON.parse(JSON.parse(JSON.stringify(a.replaceAll("'",","))))
+		return x.score - y.score
+	});
 	for (i = 0; i < dailyScoreList.length; i += 1) {
 		data = JSON.parse(JSON.parse(JSON.stringify(dailyScoreList[i].toString().replaceAll("'",","))))
 		console.log(data)
