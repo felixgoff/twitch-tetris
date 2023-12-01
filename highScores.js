@@ -32,8 +32,8 @@ async function highScoresOnLoad() {
 		scorearr.push(Score)
 		dailyOutput += '<tr><td>' + (i+1) + '</td><td>' + Date + '</td><td>' + Score + '</td></tr>';
 	}
-	console.log("Average: "+scorearr.reduce((a, b) => a + b, 0) / scorearr.length)
-
+	Average = Number((scorearr.reduce((a, b) => a + b, 0) / scorearr.length).toString().substring(0, 5))
+	console.log("Average: "+Average)
 	dailyOutput += '</table>';
 	
 	document.getElementById("dailyScoreDiv").innerHTML = dailyOutput;
