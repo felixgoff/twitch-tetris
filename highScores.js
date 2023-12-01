@@ -9,10 +9,11 @@ function getXmlHttp() {
     }
 }
 
-function highScoresOnLoad() {
+async function highScoresOnLoad() {
 
 	dailyOutput= '<table class="highScoreTable"><tr class="highScoreTableHeader"><td>#</td><td>Date</td><td>Score</td></tr>';
 	array = []
+	scorearr = []
 	data = localStorage.highscore.split(",")
     for (i in data){
         array.push(data[i])
@@ -28,11 +29,12 @@ function highScoresOnLoad() {
 		console.log(data)
 		Score = data.score
 		Date = data.date
+		scorearr.push(Score)
 		dailyOutput += '<tr><td>' + (i+1) + '</td><td>' + Date + '</td><td>' + Score + '</td></tr>';
 	}
+	console.log("Average: "+scorearr.reduce((a, b) => a + b, 0) / scorearr.length)
 
 	dailyOutput += '</table>';
-
+	
 	document.getElementById("dailyScoreDiv").innerHTML = dailyOutput;
-
 }
