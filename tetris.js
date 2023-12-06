@@ -88,7 +88,8 @@ function Tetris(controller) {
 				json = JSON.parse("{}")
 				array = new Array()
 				d = new Date()
-				a = d.getDate()+"/"+d.getMonth()+"/"+d.getFullYear()+" At "+d.getHours()+":"+d.getMinutes()
+				format = {hour: "2-digit", minute: "2-digit", year: 'numeric', month: 'numeric', day: 'numeric', hour12: false };
+				a = d.toLocaleString("sv-SE", format)
 				json.date = a.toString()
 				json.score = endScore
 				array.push(JSON.stringify(json).replaceAll(",","'"))
@@ -104,7 +105,8 @@ function Tetris(controller) {
 				    array.push(data[i])
 				}
 				d = new Date()
-				a = d.getDate()+"/"+d.getMonth()+"/"+d.getFullYear()+" At "+d.getHours()+":"+d.getMinutes()
+				format = {hour: "2-digit", minute: "2-digit", year: 'numeric', month: 'numeric', day: 'numeric', hour12: false };
+				a = d.toLocaleString("sv-SE", format)
 				json.date = a.toString()
 				json.score = endScore
 				array.push(JSON.stringify(json).replaceAll(",","'"))
