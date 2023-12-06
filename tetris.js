@@ -83,44 +83,8 @@ function Tetris(controller) {
 	    dTime = realTime - lastTime;
 	    lastTime = realTime;
 	}
-	
-	if (!paused && !gameOver) {
-	    // see if the game should be pased
-	    if (escapePressed && (!lastEscapeState)) {
-		// go into pause mode
-		startPauseTime = realTime;
-		paused = true;
-	    } else {
-		game.update(realTime - timeOffset);
-		// see if the game is over
-		scoreObject = game.getResults();
-		if (scoreObject) {
-		    gameOver = true;
-		    endScore = scoreObject.score.toString()
-		    localStorage.score = endScore
-		    // make the game end visible
-		    document.getElementById('gameEndContainer').setAttribute('class', 'gameEndOutputVisible');
-		    gameEndTty.addLine('GOOD GAME!!!');
-		    gameEndTty.addLine('');
-		    gameEndTty.addLine('');
-		    if (scoreObject.won) {
-			gameEndTty.addLine('You Win!');
-		    } else {
-			gameEndTty.addLine('Better Luck Next Time');
-		    }
-		    gameEndTty.addLine('');
-		    gameEndTty.addLine('');
-
-			/*
-		    gameEndTty.addLine('Re-directing you to');
-		    gameEndTty.addLine('the score screen...');
-			*/
-			
-			gameEndTty.addLine('Your score was:');
-			gameEndTty.addLine(endScore);
-		    gameEndTty.addLine('');
-		    gameEndTty.addLine('');
-		    if (!localStorage.highscore) {
+	function saveScore(endScore) {
+		if (!localStorage.highscore) {
 				json = JSON.parse("{}")
 				array = new Array()
 				d = new Date()
@@ -148,14 +112,69 @@ function Tetris(controller) {
 				console.log(array.toString())
 		    	localStorage.highscore = array.toString()
 		    }
-		    //sendScoreRequest(scoreObject.score);
+	}
+	if (!paused && !gameOver) {
+	    // see if the game should be pased
+	    if (escapePressed && (!lastEscapeState)) {
+		// go into pause mode
+		startPauseTime = realTime;
+		paused = true;
+	    } else {
+		game.update(realTime - timeOffset);
+		// see if the game is over
+		scoreObject = game.getResults();
+		if (scoreObject) {
+			allowsave = false
+		    gameOver = true;
+		    endScore = scoreObject.score.toString()
+		    localStorage.score = endScore
+		    // make the game end visible
+		    document.getElementById('gameEndContainer').setAttribute('class', 'gameEndOutputVisible');
+		    gameEndTty.addLine('GOOD GAME!!!');
+		    gameEndTty.addLine('');
+		    gameEndTty.addLine('');
+		    if (scoreObject.won) {
+			gameEndTty.addLine('You Win!');
+		    } else {
+			gameEndTty.addLine('Better Luck Next Time');
+		    }
+		    gameEndTty.addLine('');
+		    gameEndTty.addLine('');
 
-			window.setTimeout(function() {
+			/*
+		    gameEndTty.addLine('Re-directing you to');
+		    gameEndTty.addLine('the score screen...');
+			*/
+			
+			gameEndTty.addLine('Your score was:');
+			gameEndTty.addLine(endScore);
+		    gameEndTty.addLine('');
+		    gameEndTty.addLine('Press Space to Save');
+			window.setTimeout(function() {allowsave=true},3000)
+			timeout=window.setTimeout(function() {
 				document.getElementById('gameEndContainer').setAttribute('class', 'gameEndOutputHidden');
 				controller.restart();
-			}, 6000);
+				allowsave=false
+			}, 10000);
+			document.onkeyup = function (e) {
+				if (gameOver==true && allowsave==true) {
+					gameOver=false
+					allowsave=false
+					if (e.key == " " || e.code == "Space" || e.keyCode == 32 && allowsave == true && gameOver==true) {
+						saveScore(endScore)
+						allowsave = false
+						document.getElementById('gameEndContainer').setAttribute('class', 'gameEndOutputHidden');
+						controller.restart();
+						console.log("deez")
+					} else {
+						window.clearTimeout(timeout)
+					}
+				}
+			}
 		}
-	    }
+		    //sendScoreRequest(scoreObject.score);
+	}
+
 	} else if (paused) {
 	    // see if the escape key was hit
 	    if (escapePressed && (!lastEscapeState)) {
