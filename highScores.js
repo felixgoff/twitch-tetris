@@ -29,8 +29,10 @@ async function highScoresOnLoad() {
 		console.log(data)
 		Score = data.score
 		Date = data.date
-		scorearr.push(Score)
-		dailyOutput += '<tr><td>' + (i+1) + '</td><td>' + Date + '</td><td>' + Score + '</td></tr>';
+		if (Score > 50){
+			scorearr.push(Number(Score))
+			dailyOutput += '<tr><td>' + (i+1) + '</td><td>' + Date + '</td><td>' + Score + '</td></tr>';
+		}
 	}
 	Average = Number((scorearr.reduce((a, b) => a + b, 0) / scorearr.length).toString().substring(0, 5))
 	console.log("Average: "+Average)
