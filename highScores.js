@@ -39,4 +39,5 @@ async function highScoresOnLoad() {
 	dailyOutput += '</table>';
 	
 	document.getElementById("dailyScoreDiv").innerHTML = dailyOutput;
+	document.getElementById("average").innerHTML = "Average: "+Average;
 }
