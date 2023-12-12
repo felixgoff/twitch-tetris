@@ -14,7 +14,12 @@ async function highScoresOnLoad() {
 	dailyOutput= '<table class="highScoreTable"><tr class="highScoreTableHeader"><td>#</td><td>Date</td><td>Score</td></tr>';
 	array = []
 	scorearr = []
-	data = localStorage.highscore.split(",")
+	try {
+		data = atob(localStorage.highscore).split(",");
+	} catch (error) {
+		localStorage.highscore = btoa(localStorage.highscore)
+		data = atob(localStorage.highscore).split(",")
+	}
     for (i in data){
         array.push(data[i])
 	}
