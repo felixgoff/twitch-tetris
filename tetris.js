@@ -73,7 +73,7 @@ function Tetris(controller) {
 
     this.update = function() {
 	var realTime = (new Date()).getTime(),
-	escapePressed = jaws.pressed('esc'),
+	escapePressed = (jaws.pressed('esc')||jaws.pressed('alt')),
 	scoreObject;
 
 	if (lastTime === null) {
