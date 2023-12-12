@@ -94,13 +94,18 @@ function Tetris(controller) {
 				json.score = endScore
 				array.push(JSON.stringify(json).replaceAll(",","'"))
 				console.log(array)
-				localStorage.highscore=JSON.parse(JSON.stringify(array)) 
+				localStorage.highscore=btoa(JSON.parse(JSON.stringify(array)))
 				}
 			else {
 				json = JSON.parse("{}")
 				score = localStorage.score
 		    	array = []
-				data = localStorage.highscore.split(",")
+				try {
+			      data = atob(localStorage.highscore).split(",");
+				} catch (error) {
+				  localStorage.highscore = btoa(localStorage.highscore)
+				  data = atob(localStorage.highscore).split(",")
+				}
 				for (i in data){
 				    array.push(data[i])
 				}
@@ -112,7 +117,7 @@ function Tetris(controller) {
 				array.push(JSON.stringify(json).replaceAll(",","'"))
 				console.log(array)
 				console.log(array.toString())
-		    	localStorage.highscore = array.toString()
+		    	localStorage.highscore = btoa(array.toString())
 		    }
 	}
 	if (!paused && !gameOver) {
