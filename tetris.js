@@ -159,9 +159,11 @@ function Tetris(controller) {
 		    gameEndTty.addLine('Press Space to Save');
 			window.setTimeout(function() {allowsave=true},3000)
 			timeout=window.setTimeout(function() {
-				document.getElementById('gameEndContainer').setAttribute('class', 'gameEndOutputHidden');
-				controller.restart();
-				allowsave=false
+				if (gameOver) {
+					document.getElementById('gameEndContainer').setAttribute('class', 'gameEndOutputHidden');
+					controller.restart();
+					allowsave=false
+				}
 			}, 10000);
 			document.onkeyup = function (e) {
 				if (gameOver==true && allowsave==true) {
