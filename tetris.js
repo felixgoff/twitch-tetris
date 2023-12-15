@@ -65,7 +65,7 @@ function Tetris(controller) {
 
 	continueButton = new Button({image: 'media/buttons/continue.png', x: 250, y: 150});
 	restartButton = new Button({image: 'media/buttons/restart.png', x: 250, y: 200});
-	
+	new g
 	background = new Background();
 
 	timeOffset = (new Date()).getTime();
@@ -73,7 +73,7 @@ function Tetris(controller) {
 
     this.update = function() {
 	var realTime = (new Date()).getTime(),
-	escapePressed = (jaws.pressed('esc')||jaws.pressed('alt')),
+	escapePressed = (jaws.pressed('esc')||!document.hasFocus()),
 	scoreObject;
 
 	if (lastTime === null) {
