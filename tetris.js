@@ -90,6 +90,7 @@ function Tetris(controller) {
 				format = {hour: "2-digit", minute: "2-digit", year: 'numeric', month: 'numeric', day: 'numeric', hour12: false };
 				a = d.toLocaleString("sv-SE", format)
 				json.date = a.toString()
+				json.isodate = d.toISOString()
 				json.score = endScore
 				array.push(JSON.stringify(json).replaceAll(",","'"))
 				console.log(array)
@@ -112,6 +113,7 @@ function Tetris(controller) {
 				format = {hour: "2-digit", minute: "2-digit", year: 'numeric', month: 'numeric', day: 'numeric', hour12: false };
 				a = d.toLocaleString("sv-SE", format)
 				json.date = a.toString()
+				json.isodate = d.toISOString()
 				json.score = endScore
 				array.push(JSON.stringify(json).replaceAll(",","'"))
 				console.log(array)

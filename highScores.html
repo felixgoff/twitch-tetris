@@ -5,10 +5,11 @@
     
     <link href="styles.css" rel="stylesheet" type="text/css" />
 
-    <script src="highScores.js"></script>
+    <script type="module" src="highScores.js"></script>
     <script src="json-minified.js"></script>
+
   </head>
-  <body onload="highScoresOnLoad()">
+  <body>
 
     <table border="0" class="mainTable">
       <tr>
@@ -51,7 +52,13 @@
 	  <div class="scoreArea">
 		<p id="average"></p>
 	    <h4>Your High Scores:</h4>
+		<label for="name">Name (4 to 8 characters):</label>
+
+		<input type="text" id="name" name="name" required minlength="4" maxlength="8" value="username" size="10"/></input>
+		<input type="button" style="text-align: center;" value="Save" id="savename"></input>
+
 	    <div class="highScoresArea" id="dailyScoreDiv"></div>
+		<div class="highScoresArea2" id="dailyScoreDiv2"></div>
 	    <br/>
 	  </div>
 	</td>
