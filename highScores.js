@@ -46,7 +46,19 @@ function saveUsername() {
 	console.log("j")
 	console.log(document.getElementById("name").value)
 }
-async function OnlineHighScores(data) {
+async function updateOnlineScores(weeklyScoreList) {
+	var weeklyOutput = '<table class="highScoreTable"><tr class="highScoreTableHeader"><td>#</td><td>Date</td><td>Name</td><td>Score</td></tr>'
+	for (var h = 0; h < weeklyScoreList.length; h += 1) {
+		var data2 = weeklyScoreList[h]
+		const Name2 = data2.name
+		const Score2 = data2.score
+		const Date2 = data2.date
+		weeklyOutput += '<tr><td>' + (h+1) + '</td><td>' + Date2 + '</td><td>' + Name2 + '</td><td>' + Score2 + '</td></tr>';
+	}
+	weeklyOutput += '</table>';
+	document.getElementById("weeklyScoreDiv").innerHTML = weeklyOutput
+}
+async function setOnlineHighScores(data) {
   console.log(getWeekNumber(new Date(data.isodate)))
   document.getElementById("name").value = localStorage.username
   const username = document.getElementById("name").value
@@ -59,15 +71,25 @@ async function OnlineHighScores(data) {
 	date: data.date,
 	isodate: data.isodate
 })
+}
+async function getOnlineHighScores() {
+const db = getDatabase();
 const scoreLists = query(ref(db, 'weeks/'+getWeekNumber(new Date())[0]+"-"+getWeekNumber(new Date())[1]), orderByChild("score"));
+const postarray = []
 get(scoreLists).then((snapshot) => {
 	if (snapshot.exists()) {
-		console.log(snapshot.val());
-	  } else {
+		snapshot.forEach(post => {
+			postarray.push(post.val())
+		});
+		var weeklyScoreList = postarray.sort(function(t, y){
+			return t.score - y.score
+		}).reverse();
+		updateOnlineScores(weeklyScoreList)
+	} else {
 		console.log("No data available");
-	  }
-	}).catch((error) => {
-	  console.error(error);
+	}
+}).catch((error) => {
+		console.error(error);
 });
 }
 async function highScoresOnLoad() {
@@ -89,6 +111,7 @@ async function highScoresOnLoad() {
 	console.log(array)
 	var x
 	var y
+	await getOnlineHighScores()
 	var dailyScoreList = array.sort(function(a, b){
 		x = JSON.parse(JSON.parse(JSON.stringify(b.replaceAll("'",","))))
 		y = JSON.parse(JSON.parse(JSON.stringify(a.replaceAll("'",","))))
@@ -96,9 +119,10 @@ async function highScoresOnLoad() {
 	});
 	for (var i = 0; i < dailyScoreList.length; i += 1) {
 		data = JSON.parse(JSON.parse(JSON.stringify(dailyScoreList[i].toString().replaceAll("'",","))))
-		var data2 = OnlineHighScores(data)
+		setOnlineHighScores(data)
 		const Score = data.score
 		const Date = data.date
+
 		if (Score > 50){
 			scorearr.push(Number(Score))
 			dailyOutput += '<tr><td>' + (i+1) + '</td><td>' + Date + '</td><td>' + Score + '</td></tr>';
@@ -107,7 +131,6 @@ async function highScoresOnLoad() {
 	const Average = Number((scorearr.reduce((a, b) => a + b, 0) / scorearr.length).toString().substring(0, 5))
 	console.log("Average: "+Average)
 	dailyOutput += '</table>';
-	
 	document.getElementById("dailyScoreDiv").innerHTML = dailyOutput;
 	document.getElementById("average").innerHTML = "Average: "+Average;
 }
