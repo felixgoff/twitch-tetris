@@ -59,6 +59,7 @@ async function updateOnlineScores(weeklyScoreList) {
 	document.getElementById("weeklyScoreDiv").innerHTML = weeklyOutput
 }
 async function setOnlineHighScores(data) {
+  if (typeof data.isodate == "undefined") {return}
   console.log(getWeekNumber(new Date(data.isodate)))
   document.getElementById("name").value = localStorage.username
   const username = document.getElementById("name").value
