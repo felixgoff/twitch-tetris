@@ -72,7 +72,7 @@ function Tetris(controller) {
 
     this.update = function() {
 	var realTime = (new Date()).getTime(),
-	escapePressed = (jaws.pressed('esc')||jaws.pressed('alt')),
+	escapePressed = (jaws.pressed('esc')),
 	scoreObject;
 
 	if (lastTime === null) {
@@ -123,7 +123,7 @@ function Tetris(controller) {
 	}
 	if (!paused && !gameOver) {
 	    // see if the game should be pased
-	    if (escapePressed && (!lastEscapeState)) {
+	    if (escapePressed && (!lastEscapeState)||document.visibilityState == "hidden") {
 		// go into pause mode
 		startPauseTime = realTime;
 		paused = true;
