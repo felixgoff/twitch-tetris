@@ -17,6 +17,29 @@ const firebaseConfig = {
   // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
+
+async function compress(string) {
+    var dec = new TextDecoder("utf-8");
+    const byteArray = new TextEncoder().encode(string);
+    const cs = new CompressionStream("gzip");
+    const writer = cs.writable.getWriter();
+    writer.write(byteArray);
+    writer.close();
+    const buffer = await new Response(cs.readable).arrayBuffer()
+    return btoa(String.fromCharCode(...new Uint8Array(buffer)));
+}
+
+function decompress(string) {
+    const cs = new DecompressionStream("gzip");
+    const writer = cs.writable.getWriter();
+    const buffer = new Uint8Array([...atob(string)].map(char=>char.charCodeAt(0))).buffer
+    writer.write(buffer);
+    writer.close();
+    return new Response(cs.readable).arrayBuffer().then(function(arrayBuffer) {
+        return new TextDecoder().decode(arrayBuffer);
+    });
+}
+
 function getWeekNumber(d) {
     // Copy date so don't modify original
     d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
@@ -43,10 +66,9 @@ function getXmlHttp() {
 }
 function saveUsername() {
 	localStorage.username = document.getElementById("name").value
-	console.log("j")
 	console.log(document.getElementById("name").value)
 }
-async function updateOnlineScores(weeklyScoreList) {
+async function updateOnlineScores(weeklyScoreList,id) {
 	var weeklyOutput = '<table class="highScoreTable"><tr class="highScoreTableHeader"><td>#</td><td>Date</td><td>Name</td><td>Score</td></tr>'
 	for (var h = 0; h < weeklyScoreList.length; h += 1) {
 		var data2 = weeklyScoreList[h]
@@ -56,7 +78,7 @@ async function updateOnlineScores(weeklyScoreList) {
 		weeklyOutput += '<tr><td>' + (h+1) + '</td><td>' + Date2 + '</td><td>' + Name2 + '</td><td>' + Score2 + '</td></tr>';
 	}
 	weeklyOutput += '</table>';
-	document.getElementById("weeklyScoreDiv").innerHTML = weeklyOutput
+	document.getElementById(id).innerHTML = weeklyOutput
 }
 async function setOnlineHighScores(data) {
   if (typeof data.isodate == "undefined") {return}
@@ -73,7 +95,41 @@ async function setOnlineHighScores(data) {
 	isodate: data.isodate
 })
 }
-async function getOnlineHighScores() {
+async function getAllHighScores() {
+	  try {
+		const db = getDatabase(); // Get the database reference
+		const weeksRef = ref(db, 'weeks'); // Create a reference to 'weeks'
+	
+		const snapshot = await get(weeksRef); // Fetch data using get()
+		const allData = [];
+	
+		snapshot.forEach(week => {
+		  const weekData = [];
+		  week.forEach(folder => {
+			const data = folder.val();
+			weekData.push(data); // Store score and data together
+		  });
+	
+	
+		  // Add sorted data for the week to the main array
+		  weekData.forEach(item => allData.push(item));
+		  
+		});
+		console.log(allData)
+		const sortedData = allData.sort((a, b) => {
+			// Convert scores to numbers for comparison
+			const scoreA = parseInt(a.score);
+			const scoreB = parseInt(b.score);
+		  
+			// Sort in descending order (highest score first)
+			return scoreB - scoreA;
+		  });
+		  updateOnlineScores(sortedData,"allScoreDiv")
+	  } catch (error) {
+		console.error('Error fetching data:', error);
+	  }
+}
+async function getWeeklyHighScores() {
 const db = getDatabase();
 const scoreLists = query(ref(db, 'weeks/'+getWeekNumber(new Date())[0]+"-"+getWeekNumber(new Date())[1]), orderByChild("score"));
 const postarray = []
@@ -85,7 +141,7 @@ get(scoreLists).then((snapshot) => {
 		var weeklyScoreList = postarray.sort(function(t, y){
 			return t.score - y.score
 		}).reverse();
-		updateOnlineScores(weeklyScoreList)
+		updateOnlineScores(weeklyScoreList,"weeklyScoreDiv")
 	} else {
 		console.log("No data available");
 	}
@@ -100,10 +156,19 @@ async function highScoresOnLoad() {
 	let data
 	const scorearr = []
 	try {
-		data = atob(localStorage.highscore).split(",");
+		data = await decompress(localStorage.highscore)
+		data = data.split(",");
+		
 	} catch (error) {
-		localStorage.highscore = btoa(localStorage.highscore)
-		data = atob(localStorage.highscore).split(",")
+		console.error(error)
+		try {
+			const decoded = atob(localStorage.highscore);
+			data = decoded.split(",")
+			localStorage.highscore = await compress(decoded)
+		} catch (er) {
+			data = localStorage.highscore.split(",")
+			localStorage.highscore = await compress(localStorage.highscore)
+		}
 	}
 	console.log(data)
     for (var i in data){
@@ -112,7 +177,8 @@ async function highScoresOnLoad() {
 	console.log(array)
 	var x
 	var y
-	await getOnlineHighScores()
+	await getWeeklyHighScores()
+	await getAllHighScores()
 	var dailyScoreList = array.sort(function(a, b){
 		x = JSON.parse(JSON.parse(JSON.stringify(b.replaceAll("'",","))))
 		y = JSON.parse(JSON.parse(JSON.stringify(a.replaceAll("'",","))))
