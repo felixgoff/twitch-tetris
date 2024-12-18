@@ -54,6 +54,10 @@ function getWeekNumber(d) {
     return [d.getUTCFullYear(), weekNo];
 }
 
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
 function getXmlHttp() {
     if (window.XMLHttpRequest)
     {// code for IE7+, Firefox, Chrome, Opera, Safari
@@ -73,7 +77,7 @@ async function updateOnlineScores(weeklyScoreList,id) {
 	for (var h = 0; h < weeklyScoreList.length; h += 1) {
 		var data2 = weeklyScoreList[h]
 		const Name2 = data2.name
-		const Score2 = data2.score
+		const Score2 = numberWithCommas(data2.score)
 		const Date2 = data2.date
 		weeklyOutput += '<tr><td>' + (h+1) + '</td><td>' + Date2 + '</td><td>' + Name2 + '</td><td>' + Score2 + '</td></tr>';
 	}
@@ -192,7 +196,7 @@ async function highScoresOnLoad() {
 
 		if (Score > 50){
 			scorearr.push(Number(Score))
-			dailyOutput += '<tr><td>' + (i+1) + '</td><td>' + Date + '</td><td>' + Score + '</td></tr>';
+			dailyOutput += '<tr><td>' + (i+1) + '</td><td>' + Date + '</td><td>' +numberWithCommas(Score) + '</td></tr>';
 		}
 	}
 	const Average = Number((scorearr.reduce((a, b) => a + b, 0) / scorearr.length).toString().substring(0, 5))
