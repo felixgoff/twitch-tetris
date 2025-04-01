@@ -104,7 +104,7 @@ function Tetris(controller) {
 	    });
 	}
 
-	function saveScore(endScore) {
+	async function saveScore(endScore) {
 		if (localStorage.highscore == undefined) {
 				json = JSON.parse("{}")
 				array = new Array()
