@@ -161,6 +161,7 @@ async function highScoresOnLoad() {
 	const scorearr = []
 	try {
 		data = await decompress(localStorage.highscore)
+		console.log(data)
 		data = data.split(",");
 		
 	} catch (error) {
