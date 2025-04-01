@@ -82,8 +82,30 @@ function Tetris(controller) {
 	    dTime = realTime - lastTime;
 	    lastTime = realTime;
 	}
+	async function compress(string) {
+	    var dec = new TextDecoder("utf-8");
+	    const byteArray = new TextEncoder().encode(string);
+	    const cs = new CompressionStream("gzip");
+	    const writer = cs.writable.getWriter();
+	    writer.write(byteArray);
+	    writer.close();
+	    const buffer = await new Response(cs.readable).arrayBuffer()
+	    return btoa(String.fromCharCode(...new Uint8Array(buffer)));
+	}
+	
+	function decompress(string) {
+	    const cs = new DecompressionStream("gzip");
+	    const writer = cs.writable.getWriter();
+	    const buffer = new Uint8Array([...atob(string)].map(char=>char.charCodeAt(0))).buffer
+	    writer.write(buffer);
+	    writer.close();
+	    return new Response(cs.readable).arrayBuffer().then(function(arrayBuffer) {
+	        return new TextDecoder().decode(arrayBuffer);
+	    });
+	}
+
 	function saveScore(endScore) {
-		if (!localStorage.highscore) {
+		if (localStorage.highscore == undefined) {
 				json = JSON.parse("{}")
 				array = new Array()
 				d = new Date()
@@ -94,17 +116,18 @@ function Tetris(controller) {
 				json.score = endScore
 				array.push(JSON.stringify(json).replaceAll(",","'"))
 				console.log(array)
-				localStorage.highscore=btoa(JSON.parse(JSON.stringify(array)))
+			    c = await compress(JSON.stringify(array))
+				localStorage.highscore=c
 				}
 			else {
 				json = JSON.parse("{}")
 				score = localStorage.score
 		    	array = []
 				try {
-			      data = atob(localStorage.highscore).split(",");
+				  d = await decompress(localStorage.highscore)
+			      data = d.split(",");
 				} catch (error) {
-				  localStorage.highscore = btoa(localStorage.highscore)
-				  data = atob(localStorage.highscore).split(",")
+					console.error("Corrupted Save Data")
 				}
 				for (i in data){
 				    array.push(data[i])
@@ -118,7 +141,8 @@ function Tetris(controller) {
 				array.push(JSON.stringify(json).replaceAll(",","'"))
 				console.log(array)
 				console.log(array.toString())
-		    	localStorage.highscore = btoa(array.toString())
+				cm = await compress(array.toString())
+		    	localStorage.highscore = cm
 		    }
 	}
 	if (!paused && !gameOver) {
