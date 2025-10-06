@@ -118,7 +118,7 @@ function Tetris(controller) {
 		}
 		else {
 			json = JSON.parse("{}")
-			score = localStorage.score
+			score = atob(localStorage.score)
 			array = []
 			try {
 				d = await decompress(localStorage.highscore)
@@ -154,7 +154,7 @@ function Tetris(controller) {
 			allowsave = false
 		    gameOver = true;
 		    endScore = scoreObject.score.toString()
-		    localStorage.score = endScore
+		    localStorage.score = btoa(endScore)
 		    // make the game end visible
 		    document.getElementById('gameEndContainer').setAttribute('class', 'gameEndOutputVisible');
 		    gameEndTty.addLine('GOOD GAME!!!');
