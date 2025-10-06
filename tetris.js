@@ -106,44 +106,39 @@ function Tetris(controller) {
 
 	async function saveScore(endScore) {
 		if (localStorage.highscore == undefined) {
-				json = JSON.parse("{}")
-				array = new Array()
-				d = new Date()
-				format = {hour: "2-digit", minute: "2-digit", year: 'numeric', month: 'numeric', day: 'numeric', hour12: false };
-				a = d.toLocaleString("sv-SE", format)
-				json.date = a.toString()
-				json.isodate = d.toISOString()
-				json.score = endScore
-				array.push(JSON.stringify(json).replaceAll(",","'"))
-				console.log(array)
-			    c = await compress(JSON.stringify(array))
-				localStorage.highscore=c
-				}
-			else {
-				json = JSON.parse("{}")
-				score = localStorage.score
-		    	array = []
-				try {
-				  d = await decompress(localStorage.highscore)
-			      data = d.split(",");
-				} catch (error) {
-					console.error("Corrupted Save Data")
-				}
-				for (i in data){
-				    array.push(data[i])
-				}
-				d = new Date()
-				format = {hour: "2-digit", minute: "2-digit", year: 'numeric', month: 'numeric', day: 'numeric', hour12: false };
-				a = d.toLocaleString("sv-SE", format)
-				json.date = a.toString()
-				json.isodate = d.toISOString()
-				json.score = endScore
-				array.push(JSON.stringify(json).replaceAll(",","'"))
-				console.log(array)
-				console.log(array.toString())
-				cm = await compress(array.toString())
-		    	localStorage.highscore = cm
-		    }
+			json = JSON.parse("{}")
+			array = new Array()
+			d = new Date()
+			json.isodate = d.toISOString()
+			json.score = endScore
+			array.push(JSON.stringify(json).replaceAll(",","'"))
+			console.log(array)
+			c = await compress(array)
+			localStorage.highscore=c
+		}
+		else {
+			json = JSON.parse("{}")
+			score = localStorage.score
+			array = []
+			try {
+				d = await decompress(localStorage.highscore)
+				
+				data = d.split(",");
+				console.log(data)
+			} catch (error) {
+				console.error("Corrupted Save Data")
+			}
+			for (i in data){
+				array.push(data[i])
+			}
+			d = new Date()
+			json.isodate = d.toISOString()
+			json.score = endScore
+			array.push(JSON.stringify(json).replaceAll(",","'"))
+			cm = await compress(array)
+			localStorage.highscore = cm
+		}
+		localStorage._hs_uploaded == "0"
 	}
 	if (!paused && !gameOver) {
 	    // see if the game should be pased
